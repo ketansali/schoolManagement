@@ -1,0 +1,1714 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0",
+    "title": "SchoolManagement",
+    "contact": {}
+  },
+  "host": "localhost:7600",
+  "basePath": "/api",
+  "securityDefinitions": {"Authorization": {
+    "type": "apiKey",
+    "name": "authorization",
+    "in": "header",
+    "description": "Authentication token"
+  }},
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/country/add": {
+      "post": {
+        "summary": "add",
+        "tags": ["Country"],
+        "operationId": "add",
+        "deprecated": false,
+        "produces": ["application/json"],
+        
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "default": "",
+            "type": "string"
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/addrequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+             "Authorization": []
+          }
+        ]
+      }
+    },
+    "/country/update": {
+      "post": {
+        "summary": "update",
+        "tags": ["Country"],
+        "operationId": "update",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "default": "",
+            "type": "string"
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/updaterequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/country/get": {
+      "get": {
+        "summary": "get",
+        "tags": ["Country"],
+        "operationId": "get",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "default": "",
+            "type": "string"
+          }],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/country/get-country-by-id": {
+      "get": {
+        "summary": "get-country-by-id",
+        "tags": ["Country"],
+        "operationId": "get-country-by-id",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "default": "",
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/country/delete": {
+      "delete": {
+        "summary": "delete",
+        "tags": ["Country"],
+        "operationId": "delete",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "default": "",
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/state/add": {
+      "post": {
+        "summary": "add",
+        "tags": ["state"],
+        "operationId": "Postadd",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/addrequest1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+ 
+      }
+    },
+    "/state/update": {
+      "post": {
+        "summary": "update",
+        "tags": ["state"],
+        "operationId": "Postupdate",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "default": "",
+            "type": "string"
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/updaterequest1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/state/get": {
+      "get": {
+        "summary": "get",
+        "tags": ["state"],
+        "operationId": "Getget",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "default": "",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/state/get-state-by-id": {
+      "get": {
+        "summary": "get-state-by-id",
+        "tags": ["state"],
+        "operationId": "get-state-by-id",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "default": "",
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/state/delete": {
+      "delete": {
+        "summary": "delete",
+        "tags": ["state"],
+        "operationId": "Deletedelete",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "default": "",
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/city/add": {
+      "post": {
+        "summary": "add",
+        "tags": ["city"],
+        "operationId": "Postadd1",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/addrequest2"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/city/update": {
+      "post": {
+        "summary": "update",
+        "tags": ["city"],
+        "operationId": "Postupdate1",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "default": "",
+            "type": "string"
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/updaterequest2"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/city/delete": {
+      "delete": {
+        "summary": "delete",
+        "tags": ["city"],
+        "operationId": "Deletedelete1",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "default": "",
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/city/get": {
+      "get": {
+        "summary": "get",
+        "tags": ["city"],
+        "operationId": "Getget1",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "default": "",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/city/get-city-by-id": {
+      "get": {
+        "summary": "get-city-by-id",
+        "tags": ["city"],
+        "operationId": "get-city-by-id",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "default": "",
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/account/register": {
+      "post": {
+        "summary": "register",
+        "tags": ["account"],
+        "operationId": "register",
+        "deprecated": false,
+        "produces": ["application/json"],
+        
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/registerrequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/account/login": {
+      "post": {
+        "summary": "login",
+        "tags": ["account"],
+        "operationId": "login",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/loginrequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/user/add": {
+      "post": {
+        "summary": "add",
+        "tags": ["User"],
+        "operationId": "Postadd2",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "image",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "firstName",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "lastName",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "email",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "contact",
+            "in": "formData",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": ""
+          },
+          {
+            "name": "country",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "state",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "city",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "address",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "departmentId",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "DOB",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "DOJ",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "degree",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "userType",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "courseId",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/user/delete": {
+      "delete": {
+        "summary": "delete",
+        "tags": ["User"],
+        "operationId": "Deletedelete2",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/user/get": {
+      "get": {
+        "summary": "get",
+        "tags": ["User"],
+        "operationId": "Getget2",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/user/get-user-by-id": {
+      "get": {
+        "summary": "get-user-by-id",
+        "tags": ["User"],
+        "operationId": "get-user-by-id",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/user/update": {
+      "post": {
+        "summary": "update",
+        "tags": ["User"],
+        "operationId": "Postupdate2",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "firstName",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "lastName",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "email",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "contact",
+            "in": "formData",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": ""
+          },
+          {
+            "name": "country",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "state",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "city",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "address",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "departmentId",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "DOB",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "DOJ",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "degree",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "userType",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "courseId",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/department/add": {
+      "post": {
+        "summary": "add",
+        "tags": ["department"],
+        "operationId": "Postadd3",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/addrequest3"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/department/update": {
+      "post": {
+        "summary": "update",
+        "tags": ["department"],
+        "operationId": "Postupdate3",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/updaterequest3"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/department/delete": {
+      "delete": {
+        "summary": "delete",
+        "tags": ["department"],
+        "operationId": "Deletedelete3",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/department/get": {
+      "get": {
+        "summary": "get",
+        "tags": ["department"],
+        "operationId": "Getget3",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/department/get-department-by-id": {
+      "get": {
+        "summary": "get-department-by-id",
+        "tags": ["department"],
+        "operationId": "get-department-by-id",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/course/add": {
+      "post": {
+        "summary": "add",
+        "tags": ["course"],
+        "operationId": "Postadd4",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/addrequest4"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/course/update": {
+      "post": {
+        "summary": "update",
+        "tags": ["course"],
+        "operationId": "Postupdate4",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/updaterequest4"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/course/get": {
+      "get": {
+        "summary": "get",
+        "tags": ["course"],
+        "operationId": "Getget4",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/course/delete": {
+      "delete": {
+        "summary": "delete",
+        "tags": ["course"],
+        "operationId": "Deletedelete4",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/course/get-course-by-id": {
+      "get": {
+        "summary": "get-course-by-id",
+        "tags": ["course"],
+        "operationId": "get-course-by-id",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/event/add": {
+      "post": {
+        "summary": "add",
+        "tags": ["Event"],
+        "operationId": "Postadd5",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "consumes": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": false,
+            "enum": ["application/json"],
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "eventName",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "startDate",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "endDate",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "time",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "images",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/event/update": {
+      "post": {
+        "summary": "update",
+        "tags": ["Event"],
+        "operationId": "Postupdate5",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "eventName",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "startDate",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "endDate",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "time",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "images",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/event/get": {
+      "get": {
+        "summary": "get",
+        "tags": ["Event"],
+        "operationId": "Getget5",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/event/delete": {
+      "delete": {
+        "summary": "delete",
+        "tags": ["Event"],
+        "operationId": "Deletedelete5",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/event/get-event-by-id": {
+      "get": {
+        "summary": "get-event-by-id",
+        "tags": ["Event"],
+        "operationId": "get-event-by-id",
+        "deprecated": false,
+        "produces": ["application/json"],
+        "security": [
+          {
+             "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "addrequest": {
+      "title": "addrequest",
+      "example": {
+        "countryName": "Rashiya"
+      },
+      "type": "object",
+      "properties": {
+        "countryName": {
+          "type": "string"
+        }
+      },
+      "required": ["countryName"]
+    },
+    "updaterequest": {
+      "title": "updaterequest",
+      "example": {
+        "id": "63328c1c15a7dda7bec205eb",
+        "countryName": "In"
+      },
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "countryName": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "countryName"]
+    },
+    "addrequest1": {
+      "title": "addrequest1",
+      "example": {
+        "stateName": "Jaipur",
+        "countryId": "63328c1c15a7dda7bec205eb"
+      },
+      "type": "object",
+      "properties": {
+        "stateName": {
+          "type": "string"
+        },
+        "countryId": {
+          "type": "string"
+        }
+      },
+      "required": ["stateName", "countryId"]
+    },
+    "updaterequest1": {
+      "title": "updaterequest1",
+      "example": {
+        "id": "63329a57c256e4acd56a4e91",
+        "stateName": "Gujarat"
+      },
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "stateName": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "stateName"]
+    },
+    "addrequest2": {
+      "title": "addrequest2",
+      "example": {
+        "cityName": "Rajkot",
+        "stateId": "63329da1ac80588f7aa69392"
+      },
+      "type": "object",
+      "properties": {
+        "cityName": {
+          "type": "string"
+        },
+        "stateId": {
+          "type": "string"
+        }
+      },
+      "required": ["cityName", "stateId"]
+    },
+    "updaterequest2": {
+      "title": "updaterequest2",
+      "example": {
+        "id": "63329df0ac80588f7aa6939a",
+        "cityName": "Surat",
+        "stateId": "63329da1ac80588f7aa69392"
+      },
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "cityName": {
+          "type": "string"
+        },
+        "stateId": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "cityName", "stateId"]
+    },
+    "registerrequest": {
+      "title": "registerrequest",
+      "example": {
+        "firstName": "Ketan",
+        "lastName": "sali",
+        "email": "ketan@gmail.com",
+        "contact": "1256320256",
+        "password": "7600",
+        "confirmPassword": "7600"
+      },
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "contact": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "confirmPassword": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "firstName",
+        "lastName",
+        "email",
+        "contact",
+        "password",
+        "confirmPassword"
+      ]
+    },
+    "loginrequest": {
+      "title": "loginrequest",
+      "example": {
+        "email": "ketan@gmail.com",
+        "password": "7600"
+      },
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "required": ["email", "password"]
+    },
+    "addrequest3": {
+      "title": "addrequest3",
+      "example": {
+        "departmentName": "Developer"
+      },
+      "type": "object",
+      "properties": {
+        "departmentName": {
+          "type": "string"
+        }
+      },
+      "required": ["departmentName"]
+    },
+    "updaterequest3": {
+      "title": "updaterequest3",
+      "example": {
+        "id": "6332cba7a25de4faab81ba06",
+        "departmentName": "BCA"
+      },
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "departmentName": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "departmentName"]
+    },
+    "addrequest4": {
+      "title": "addrequest4",
+      "example": {
+        "courseName": "JSON",
+        "startDate": "05/05/2022",
+        "endDate": "05/06/2022",
+        "description": "Tutorial"
+      },
+      "type": "object",
+      "properties": {
+        "courseName": {
+          "type": "string"
+        },
+        "startDate": {
+          "type": "string"
+        },
+        "endDate": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": ["courseName", "startDate", "endDate", "description"]
+    },
+    "updaterequest4": {
+      "title": "updaterequest4",
+      "example": {
+        "id": "6332cfa9c37536a2d6f7c7d8",
+        "courseName": "Java",
+        "startDate": "05/05/2022",
+        "endDate": "05/06/2022",
+        "description": "Java Tutorial"
+      },
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "courseName": {
+          "type": "string"
+        },
+        "startDate": {
+          "type": "string"
+        },
+        "endDate": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "courseName", "startDate", "endDate", "description"]
+    }
+  },
+  "security": [],
+  "tags": [
+    {
+      "name": "Country"
+    },
+    {
+      "name": "state"
+    },
+    {
+      "name": "city"
+    },
+    {
+      "name": "account"
+    },
+    {
+      "name": "User"
+    },
+    {
+      "name": "department"
+    },
+    {
+      "name": "course"
+    },
+    {
+      "name": "Event"
+    }
+  ]
+}
