@@ -9,8 +9,9 @@ exports.registerValidation = (req, res, next) => {
       tlds: { allow: ["com", "net"] },
     }).required(),
     password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")).required(),
+    confirmPassword:Joi.string().valid(Joi.ref('password')).required().label('!!Passwords do not match'),
     contact: Joi.string()
-      .regex(/^\d{3}-\d{3}-\d{4}$/)
+      .min(10).max(10)
       .required(),
   });
   const { error } = reagister.validate(req.body);
@@ -18,6 +19,7 @@ exports.registerValidation = (req, res, next) => {
   const message = error.details.map((e) => e.message);
   return badRequestResponse(res, {
     message: message,
+    
   });
 };
 

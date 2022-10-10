@@ -3,7 +3,7 @@ const { badRequestResponse } = require("../middleware/response");
 exports.cityValidation = (req, res, next) => {
   const city = Joi.object().keys({
     cityName: Joi.string().required(),
-    countryId: Joi.string().required(),
+    StateId: Joi.string().required(),
   });
   const { error } = city.validate(req.body);
   if (!error) return next();

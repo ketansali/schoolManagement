@@ -1,15 +1,20 @@
-const mongoose = require('mongoose')
-const errorResponse = require('../middleware/error-response')
-const COURSE = mongoose.model('course')
-const {decodeUris, cloneDeep}  = require('../lib/commonQuery')
-const { successResponse, badRequestResponse } = require('../middleware/response')
 
+const errorResponse = require('../middleware/error-response')
+const COURSE = require('../models/courseSchema')
+const { successResponse, badRequestResponse } = require('../middleware/response')
+const { Sequelize,Op } = require("sequelize");
 exports.course = {
     addCourse : async  (req,res)=>{
         try {
-            req.body = decodeUris(req.body)
+  
             const courseInfo = await COURSE.findOne({
-                courseName: {$regex : req.body.courseName, $options:'i'},
+              where: {
+                courseName: Sequelize.where(
+                  Sequelize.fn("LOWER", Sequelize.col("courseName")),
+                  "LIKE",
+                  "%" + req.body.courseName.toLowerCase() + "%"
+                ),
+              },
               },);
               if (courseInfo) {
                 return badRequestResponse(res, {
@@ -22,7 +27,7 @@ exports.course = {
                 startDate: req.body.startDate,
                 endDate: req.body.endDate,
                 description: req.body.description,
-                createdBy: req.user._id,
+                createdBy: req.user.Id,
                 isActive: true
             }
 
@@ -43,26 +48,38 @@ exports.course = {
     },
     updateCourse : async  (req,res)=>{
         try {
-            req.body = decodeUris(req.body)
-            const courseInfo = await COURSE.findOne({
-              _id: req.body.id,
-            })
+
+            const courseInfo = await COURSE.findByPk(req.body.id)
             if (!courseInfo) {
               return badRequestResponse(res, {
                 message: 'Course not found',
               })
             }
-            await COURSE.findOneAndUpdate(
-              { _id: courseInfo._id },
-              {
-                $set: {
+            const nameExisted = await COURSE.findOne({
+              where: { [Op.and]:{
+                courseName: Sequelize.where(
+                  Sequelize.fn("LOWER", Sequelize.col('courseName')),
+                  "LIKE",
+                  "%" + req.body.courseName.toLowerCase() + "%"
+                ),
+                Id :{
+                  [Op.ne]:req.body.id
+                }
+              }   
+              },
+            })
+            if(nameExisted) return badRequestResponse(res,{
+              message :'Course already exist!'
+            })
+            await COURSE.update(
+              { 
                     courseName: req.body.courseName,
                     startDate: req.body.startDate,
                     endDate: req.body.endDate,
                     description: req.body.description,
-                    updatedBy :req.user._id
+                    updatedBy :req.user.Id
                 },
-              },
+              { where: { Id: courseInfo.Id } }
             )
             return successResponse(res, {
               message: 'Course updated successfully',
@@ -73,16 +90,14 @@ exports.course = {
     },
     deleteCourse : async  (req,res)=>{
         try {
-            const courseInfo = await COURSE.findOne({
-              _id: req.query.id,
-            })
+            const courseInfo = await COURSE.findByPk(req.query.id)
             if (!courseInfo) {
               return badRequestResponse(res, {
                 message: 'Course not found',
               })
             }
-            await COURSE.findByIdAndRemove({
-              _id: courseInfo._id,
+            await COURSE.destroy({
+              where: { Id: req.query.id },
             })
             return successResponse(res, {
               message: 'Course deleted successfully',
@@ -93,10 +108,10 @@ exports.course = {
     },
     getCourses : async  (req,res)=>{
         try {
-            req.body = decodeUris(req.body)
-            const coutries = await COURSE.find({})
+
+            const coutries = await COURSE.findAll({})
             return successResponse(res, {
-              data: cloneDeep(coutries),
+              data: coutries
             })
           } catch (error) {
             return errorResponse(error, req, res)
@@ -104,17 +119,15 @@ exports.course = {
     },
     getCourseById : async  (req,res)=>{
         try {
-            req.body = decodeUris(req.body)
-            const courseInfo = await COURSE.findOne({
-              _id: req.query.id,
-            })
+
+            const courseInfo = await COURSE.findByPk(req.query.id)
             if (!courseInfo) {
               return badRequestResponse(res, {
                 message: 'Course not found',
               })
             }
             return successResponse(res, {
-              data: cloneDeep(courseInfo),
+              data: courseInfo
             })
           } catch (error) {
             return errorResponse(error, req, res)

@@ -1,29 +1,32 @@
-const mongoose = require('mongoose')
 const errorResponse = require('../middleware/error-response')
-const STATE = mongoose.model('state')
-const {decodeUris, cloneDeep}  = require('../lib/commonQuery')
+const STATE = require('../models/stateSchema')
 const { successResponse, badRequestResponse } = require('../middleware/response')
-
+const { Sequelize,Op } = require("sequelize");
 exports.state = {
     addState : async  (req,res)=>{
         try {
-            req.body = decodeUris(req.body)
             const stateInfo = await STATE.findOne({
-                stateName: {$regex : req.body.stateName, $options:'i'},
+              where: {
+                stateName: Sequelize.where(
+                  Sequelize.fn("LOWER", Sequelize.col("stateName")),
+                  "LIKE",
+                  "%" + req.body.stateName.toLowerCase() + "%"
+                ),
+              }
               },);
               if (stateInfo) {
                 return badRequestResponse(res, {
                   message: "State already exist!",
                 });
               }
-            const country = {
+            const state = {
                 stateName: req.body.stateName,
-                createdBy: req.user._id,
-                countryId :req.body.countryId,
+                createdBy: req.user.Id,
+                CountryId :req.body.CountryId,
                 isActive: true
             }
 
-            const isCreated = await STATE.create(country)
+            const isCreated = await STATE.create(state)
             if (isCreated) {
               return successResponse(res, {
                 message: 'State created successfully',
@@ -40,24 +43,35 @@ exports.state = {
     },
     updateState : async  (req,res)=>{
         try {
-            req.body = decodeUris(req.body)
-            const stateInfo = await STATE.findOne({
-              _id: req.body.id,
-            })
+            const stateInfo = await STATE.findByPk(req.body.id)
             if (!stateInfo) {
               return badRequestResponse(res, {
                 message: 'State not found',
               })
             }
-            await STATE.findOneAndUpdate(
-              { _id: stateInfo._id },
-              {
-                $set: {
-                  stateName: req.body.stateName,
-                  updatedBy :req.user._id,
-                  countryId :req.body.countryId
-                },
+            const nameExisted = await STATE.findOne({
+              where: { [Op.and]:{
+                stateName: Sequelize.where(
+                  Sequelize.fn("LOWER", Sequelize.col('stateName')),
+                  "LIKE",
+                  "%" + req.body.stateName.toLowerCase() + "%"
+                ),
+                Id :{
+                  [Op.ne]:req.body.id
+                }
+              }   
               },
+            })
+            if(nameExisted) return badRequestResponse(res,{
+              message :'State already exist!'
+            })
+            await STATE.update(
+              {
+                  stateName: req.body.stateName,
+                 updatedBy :req.user.Id,
+                  countryId :req.body.countryId              
+              },
+              {where : {Id :stateInfo.Id }}
             )
             return successResponse(res, {
               message: 'State updated successfully',
@@ -68,17 +82,15 @@ exports.state = {
     },
     deleteState : async  (req,res)=>{
         try {
-            const stateInfo = await STATE.findOne({
-              _id: req.query.id,
-            })
+            const stateInfo = await STATE.findByPk(req.query.id)
             if (!stateInfo) {
               return badRequestResponse(res, {
                 message: 'State not found',
               })
             }
-            await STATE.findByIdAndRemove({
-              _id: stateInfo._id,
-            })
+            await STATE.destroy({
+              where: { Id: req.query.id },
+            });
             return successResponse(res, {
               message: 'State deleted successfully',
             })
@@ -88,10 +100,9 @@ exports.state = {
     },
     getstates : async  (req,res)=>{
         try {
-            req.body = decodeUris(req.body)
-            const coutries = await STATE.find({})
+            const coutries = await STATE.findAll({})
             return successResponse(res, {
-              data: cloneDeep(coutries),
+              data: coutries,
             })
           } catch (error) {
             return errorResponse(error, req, res)
@@ -99,17 +110,14 @@ exports.state = {
     },
     getStateById : async  (req,res)=>{
         try {
-            req.body = decodeUris(req.body)
-            const stateInfo = await STATE.findOne({
-              _id: req.query.id,
-            })
+            const stateInfo = await STATE.findByPk(req.query.id)
             if (!stateInfo) {
               return badRequestResponse(res, {
                 message: 'State not found',
               })
             }
             return successResponse(res, {
-              data: cloneDeep(stateInfo),
+              data: stateInfo,
             })
           } catch (error) {
             return errorResponse(error, req, res)

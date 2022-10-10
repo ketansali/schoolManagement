@@ -1,25 +1,30 @@
-const mongoose = require('mongoose')
-const errorResponse = require('../middleware/error-response')
-const DEPARTMENT = mongoose.model('department')
-const {decodeUris, cloneDeep}  = require('../lib/commonQuery')
-const { successResponse, badRequestResponse } = require('../middleware/response')
 
+const errorResponse = require('../middleware/error-response')
+const DEPARTMENT = require('../models/departmentSchema')
+const { successResponse, badRequestResponse } = require('../middleware/response')
+const { Sequelize,Op } = require("sequelize");
 exports.department = {
     addDepartment : async  (req,res)=>{
         try {
-            req.body = decodeUris(req.body)
+
             const departmentInfo = await DEPARTMENT.findOne({
-                departmentName: {$regex : req.body.departmentName, $options:'i'},
+              where: {
+                departmentName: Sequelize.where(
+                  Sequelize.fn("LOWER", Sequelize.col("departmentName")),
+                  "LIKE",
+                  "%" + req.body.departmentName.toLowerCase() + "%"
+                ),
+              }
               },);
+              console.log(req.user);
               if (departmentInfo) {
                 return badRequestResponse(res, {
                   message: "Department already exist!",
                 });
               }
-            
             const department = {
                 departmentName: req.body.departmentName,
-                createdBy: req.user._id,
+                createdBy: req.user.Id,
                 isActive: true
             }
 
@@ -40,23 +45,36 @@ exports.department = {
     },
     updateDepartment : async  (req,res)=>{
         try {
-            req.body = decodeUris(req.body)
-            const departmentInfo = await DEPARTMENT.findOne({
-              _id: req.body.id,
-            })
+
+            const departmentInfo = await DEPARTMENT.findByPk(req.body.id)
             if (!departmentInfo) {
               return badRequestResponse(res, {
                 message: 'Department not found',
               })
             }
-            await DEPARTMENT.findOneAndUpdate(
-              { _id: departmentInfo._id },
-              {
-                $set: {
-                  departmentName: req.body.departmentName,
-                 updatedBy :req.user._id
-                },
+            const nameExisted = await DEPARTMENT.findOne({
+              where: { [Op.and]:{
+                departmentName: Sequelize.where(
+                  Sequelize.fn("LOWER", Sequelize.col('departmentName')),
+                  "LIKE",
+                  "%" + req.body.departmentName.toLowerCase() + "%"
+                ),
+                Id :{
+                  [Op.ne]:req.body.id
+                }
+              }   
               },
+            })
+            if(nameExisted) return badRequestResponse(res,{
+              message :'Department already exist!'
+            })
+            await DEPARTMENT.update(
+              {
+                  departmentName: req.body.departmentName,
+                 updatedBy :req.user.Id
+                
+              },
+              { where: { Id: departmentInfo.Id } }
             )
             return successResponse(res, {
               message: 'Department updated successfully',
@@ -67,16 +85,14 @@ exports.department = {
     },
     deleteDepartment : async  (req,res)=>{
         try {
-            const departmentInfo = await DEPARTMENT.findOne({
-              _id: req.query.id,
-            })
+            const departmentInfo = await DEPARTMENT.findByPk(req.query.id)
             if (!departmentInfo) {
               return badRequestResponse(res, {
                 message: 'Department not found',
               })
             }
-            await DEPARTMENT.findByIdAndRemove({
-              _id: departmentInfo._id,
+            await DEPARTMENT.destroy({
+              where: { Id: req.query.id }
             })
             return successResponse(res, {
               message: 'Department deleted successfully',
@@ -87,10 +103,10 @@ exports.department = {
     },
     getDepartments : async  (req,res)=>{
         try {
-            req.body = decodeUris(req.body)
-            const coutries = await DEPARTMENT.find({})
+
+            const coutries = await DEPARTMENT.findAll({})
             return successResponse(res, {
-              data: cloneDeep(coutries),
+              data: coutries
             })
           } catch (error) {
             return errorResponse(error, req, res)
@@ -98,17 +114,15 @@ exports.department = {
     },
     getDepartmentById : async  (req,res)=>{
         try {
-            req.body = decodeUris(req.body)
-            const departmentInfo = await DEPARTMENT.findOne({
-              _id: req.query.id,
-            })
+
+            const departmentInfo = await DEPARTMENT.findByPk(req.query.id)
             if (!departmentInfo) {
               return badRequestResponse(res, {
                 message: 'Department not found',
               })
             }
             return successResponse(res, {
-              data: cloneDeep(departmentInfo),
+              data: departmentInfo
             })
           } catch (error) {
             return errorResponse(error, req, res)

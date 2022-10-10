@@ -1,37 +1,50 @@
 const errorResponse = require("../middleware/error-response")
-const mongoose = require('mongoose');
 const { successResponse, badRequestResponse, notFoundResponse } = require("../middleware/response");
-const { decodeUris, cloneDeep } = require("../lib/commonQuery");
-const USER = mongoose.model("users");
+const USER = require('../models/userSchema')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-
+const { Sequelize,Op } = require("sequelize");
 
 exports.account = {
 
     login: async (req,res)=>{
         try {
-            req.body = decodeUris(req.body);
+
             let userInfo = await USER.findOne({
-              email: req.body.email,
+              where: {
+                email: Sequelize.where(
+                  Sequelize.fn("LOWER", Sequelize.col("email")),
+                  "LIKE",
+                  "%" + req.body.email.toLowerCase() + "%"
+                ),
+              },
+              raw: true
             });
             if (userInfo) {
               if (!bcrypt.compareSync(req.body.password, userInfo.password)) {
+                
                 return badRequestResponse(res, {
                   message: "Authentication failed. Wrong password.",
                 });
               }
               
-              userInfo = cloneDeep(userInfo);
-              delete userInfo["password"];
+              userInfo = {
+                Id: userInfo.Id,
+                firstName : userInfo.firstName,
+                lastName : userInfo.lastName,
+                email : userInfo.email,
+                contact : userInfo.contact,
+                role : userInfo.role
+              }
+             // delete userInfo["password"];
               // create a token
-              const token = jwt.sign(userInfo, process.env.secret, {
+              const token = await jwt.sign(userInfo, process.env.secret, {
                 expiresIn: "24h", // expires in 24 hours
               });
               return successResponse(res, {
                 message: "You are logged in successfully!",
                 token,
-                userInfo,
+                data :userInfo
               });
             }
             return notFoundResponse(res, {
@@ -44,7 +57,13 @@ exports.account = {
     register: async(req, res)=>{
         try {
             const userInfo = await USER.findOne({
-              email: req.body.email,
+              where: {
+                email: Sequelize.where(
+                  Sequelize.fn("LOWER", Sequelize.col("email")),
+                  "LIKE",
+                  "%" + req.body.email.toLowerCase() + "%"
+                ),
+              }
             });
             if (userInfo) {
               return badRequestResponse(res, {

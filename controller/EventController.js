@@ -1,7 +1,9 @@
-const mongoose = require("mongoose");
 const errorResponse = require("../middleware/error-response");
-const EVENT = mongoose.model("event");
-const { decodeUris, cloneDeep } = require("../lib/commonQuery");
+const EVENT = require("../models/eventSchema");
+const EVENTIMAGES = require("../models/eventImagesSchema");
+const { Sequelize, Op, QueryTypes } = require("sequelize");
+const sequelize = require("../config/db");
+const { unlikeImage } = require("../middleware/removeImage");
 const {
   successResponse,
   badRequestResponse,
@@ -41,7 +43,13 @@ exports.event = {
   addEvent: async (req, res) => {
     try {
       const eventInfo = await EVENT.findOne({
-        eventName: { $regex: req.body.eventName, $options: "i" },
+        where: {
+          eventName: Sequelize.where(
+            Sequelize.fn("LOWER", Sequelize.col("eventName")),
+            "LIKE",
+            "%" + req.body.eventName.toLowerCase() + "%"
+          ),
+        },
       });
       if (eventInfo) {
         return badRequestResponse(res, {
@@ -55,16 +63,25 @@ exports.event = {
         endDate: req.body.endDate,
         description: req.body.description,
         time: req.body.time,
-        createdBy: req.user._id,
+        createdBy: req.user.Id,
         isActive: true,
       };
 
       const imageFile = req.files ? req.files.images : [];
       const imgs = await this.event.getImageOptions(imageFile);
-      if (imgs) event.images = imgs;
 
       const isCreated = await EVENT.create(event);
       if (isCreated) {
+        if (imgs.length != 0) {
+          const imagesdata = imgs.map((i) => {
+            return {
+              EventId: isCreated.Id,
+              image: i,
+              createdBy: req.user.Id,
+            };
+          });
+          await EVENTIMAGES.bulkCreate(imagesdata);
+        }
         return successResponse(res, {
           message: "Event created successfully",
         });
@@ -79,9 +96,7 @@ exports.event = {
   },
   updateEvent: async (req, res) => {
     try {
-      const eventInfo = await EVENT.findOne({
-        _id: req.body.id,
-      });
+      const eventInfo = await EVENT.findByPk(req.body.id);
       if (!eventInfo) {
         return badRequestResponse(res, {
           message: "Event not found",
@@ -93,26 +108,33 @@ exports.event = {
         endDate: req.body.endDate,
         description: req.body.description,
         time: req.body.time,
-        updatedBy: req.user._id,
+        updatedBy: req.user.Id,
       };
       const imageFile = req.files ? req.files.images : [];
       const imgs = await this.event.getImageOptions(imageFile);
-      if (imgs) {
-        let pathDirectory = __dirname.split("\\");
-      console.log(pathDirectory);
-      pathDirectory.pop();
-      pathDirectory = pathDirectory.join("\\");
-      eventInfo.images.map((imgName) => {
-        fs.unlink(`${pathDirectory}/uploads/eventes/${imgName}`, (err) => {});
-      });
-        event.images = imgs
+
+      if (imgs.length != 0) {
+        const eventImagesData = await EVENTIMAGES.findAll({
+          where: { EventId: eventInfo.Id },
+        });
+        eventImagesData.map((e) => {
+          unlikeImage(`/uploads/eventes/${e.image}`, (err) => {});
+        });
+        await EVENTIMAGES.destroy({
+          where: { EventId: eventInfo.Id },
+        });
+
+        const imagesdata = imgs.map((i) => {
+          return {
+            EventId: eventInfo.Id,
+            image: i,
+            createdBy: req.user.Id,
+            updatedBy: req.user.Id,
+          };
+        });
+        await EVENTIMAGES.bulkCreate(imagesdata);
       }
-      await EVENT.findOneAndUpdate(
-        { _id: eventInfo._id },
-        {
-          $set: event,
-        }
-      );
+      await EVENT.update(event, { where: { Id: eventInfo.Id } });
       return successResponse(res, {
         message: "Event updated successfully",
       });
@@ -122,23 +144,24 @@ exports.event = {
   },
   deleteEvent: async (req, res) => {
     try {
-      const eventInfo = await EVENT.findOne({
-        _id: req.query.id,
-      });
+      const eventInfo = await EVENT.findByPk(req.query.id);
       if (!eventInfo) {
         return badRequestResponse(res, {
           message: "Event not found",
         });
       }
-      let pathDirectory = __dirname.split("\\");
-      console.log(pathDirectory);
-      pathDirectory.pop();
-      pathDirectory = pathDirectory.join("\\");
-      eventInfo.images.map((imgName) => {
-        fs.unlink(`${pathDirectory}/uploads/eventes/${imgName}`, (err) => {});
+      const eventImagesData = await EVENTIMAGES.findAll({
+        where: { EventId: eventInfo.Id },
       });
-      await EVENT.findByIdAndRemove({
-        _id: eventInfo._id,
+      
+      eventImagesData.map((e) => {
+        unlikeImage(`/uploads/eventes/${e.image}`);
+      });
+      await EVENTIMAGES.destroy({
+        where: { EventId: eventInfo.Id },
+      });
+      await EVENT.destroy({
+        where: { Id: req.query.id },
       });
       return successResponse(res, {
         message: "Event deleted successfully",
@@ -149,10 +172,24 @@ exports.event = {
   },
   getEvents: async (req, res) => {
     try {
-      req.body = decodeUris(req.body);
-      const coutries = await EVENT.find({});
+      // const eventes = await sequelize.query("select * from events", {
+      //   type: QueryTypes.SELECT,
+      // });
+      // const eventeImages = await sequelize.query("select * from eventimages", {
+      //   type: QueryTypes.SELECT,
+      // });
+      const eventes = await EVENT.findAll({ })
+      const eventeImages = await EVENTIMAGES.findAll({});
+      await eventes.map((ev) => {
+        eventeImages.map((evi) => {
+          if (ev.Id == evi.EventId) {
+            if (!ev["images"]) ev["images"] = new Array();
+            ev.images.push(evi.image);
+          }
+        });
+      });
       return successResponse(res, {
-        data: cloneDeep(coutries),
+        data: eventes,
       });
     } catch (error) {
       return errorResponse(error, req, res);
@@ -160,17 +197,24 @@ exports.event = {
   },
   getEventById: async (req, res) => {
     try {
-      req.body = decodeUris(req.body);
-      const eventInfo = await EVENT.findOne({
-        _id: req.query.id,
+      const eventInfo = await EVENT.findByPk(req.query.id);
+      const eventeImages = await EVENTIMAGES.findAll({
+        where: { EventId: eventInfo.Id },
       });
+      if (eventeImages.length != 0) {
+        eventeImages.map((evi) => {
+          if (!eventInfo["images"]) eventInfo["images"] = new Array();
+          eventInfo.images.push(evi.image);
+        });
+      }
+
       if (!eventInfo) {
         return badRequestResponse(res, {
           message: "Event not found",
         });
       }
       return successResponse(res, {
-        data: cloneDeep(eventInfo),
+        data: eventInfo,
       });
     } catch (error) {
       return errorResponse(error, req, res);

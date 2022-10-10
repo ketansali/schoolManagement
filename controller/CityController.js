@@ -1,29 +1,34 @@
-const mongoose = require('mongoose')
-const errorResponse = require('../middleware/error-response')
-const CITY = mongoose.model('city')
-const {decodeUris, cloneDeep}  = require('../lib/commonQuery')
-const { successResponse, badRequestResponse } = require('../middleware/response')
 
+const errorResponse = require('../middleware/error-response')
+const CITY = require('../models/citySchema')
+const { successResponse, badRequestResponse } = require('../middleware/response')
+const { Sequelize,Op } = require("sequelize");
 exports.city = {
     addCity : async  (req,res)=>{
         try {
-            req.body = decodeUris(req.body)
+
             const cityInfo = await CITY.findOne({
-                cityName: {$regex : req.body.cityName, $options:'i'},
+              where: {
+                cityName: Sequelize.where(
+                  Sequelize.fn("LOWER", Sequelize.col("cityName")),
+                  "LIKE",
+                  "%" + req.body.cityName.toLowerCase() + "%"
+                ),
+              }
               },);
               if (cityInfo) {
                 return badRequestResponse(res, {
                   message: "City already exist!",
                 });
               }
-            const country = {
+            const city = {
                 cityName: req.body.cityName,
-                createdBy: req.user._id,
-                stateId :req.body.stateId,
+               createdBy: req.user.Id,
+                StateId :req.body.StateId,
                 isActive: true
             }
 
-            const isCreated = await CITY.create(country)
+            const isCreated = await CITY.create(city)
             if (isCreated) {
               return successResponse(res, {
                 message: 'City created successfully',
@@ -40,24 +45,35 @@ exports.city = {
     },
     updateCity : async  (req,res)=>{
         try {
-            req.body = decodeUris(req.body)
-            const cityInfo = await CITY.findOne({
-              _id: req.body.id,
-            })
+            const cityInfo = await CITY.findByPk(req.body.id)
             if (!cityInfo) {
               return badRequestResponse(res, {
                 message: 'City not found',
               })
             }
-            await CITY.findOneAndUpdate(
-              { _id: cityInfo._id },
-              {
-                $set: {
+            const nameExisted = await CITY.findOne({
+              where: { [Op.and]:{
+                cityName: Sequelize.where(
+                  Sequelize.fn("LOWER", Sequelize.col('cityName')),
+                  "LIKE",
+                  "%" + req.body.cityName.toLowerCase() + "%"
+                ),
+                Id :{
+                  [Op.ne]:req.body.id
+                }
+              }   
+              },
+            })
+            if(nameExisted) return badRequestResponse(res,{
+              message :'City already exist!'
+            })
+            await CITY.update(
+             {
                   cityName: req.body.cityName,
-                 updatedBy :req.user._id,
+                 updatedBy :req.user.Id,
                  stateId :req.body.stateId
                 },
-              },
+                {where : {Id :cityInfo.Id }}
             )
             return successResponse(res, {
               message: 'City updated successfully',
@@ -68,16 +84,14 @@ exports.city = {
     },
     deleteCity : async  (req,res)=>{
         try {
-            const cityInfo = await CITY.findOne({
-              _id: req.query.id,
-            })
+            const cityInfo = await CITY.findByPk(req.query.id)
             if (!cityInfo) {
               return badRequestResponse(res, {
                 message: 'City not found',
               })
             }
-            await CITY.findByIdAndRemove({
-              _id: cityInfo._id,
+            await CITY.destroy({
+              where: { Id: req.query.id },
             })
             return successResponse(res, {
               message: 'City deleted successfully',
@@ -88,10 +102,9 @@ exports.city = {
     },
     getcitys : async  (req,res)=>{
         try {
-            req.body = decodeUris(req.body)
-            const coutries = await CITY.find({})
+            const coutries = await CITY.findAll({})
             return successResponse(res, {
-              data: cloneDeep(coutries),
+              data: coutries
             })
           } catch (error) {
             return errorResponse(error, req, res)
@@ -99,17 +112,14 @@ exports.city = {
     },
     getCityById : async  (req,res)=>{
         try {
-            req.body = decodeUris(req.body)
-            const cityInfo = await CITY.findOne({
-              _id: req.query.id,
-            })
+            const cityInfo = await CITY.findByPk(req.query.id)
             if (!cityInfo) {
               return badRequestResponse(res, {
                 message: 'City not found',
               })
             }
             return successResponse(res, {
-              data: cloneDeep(cityInfo),
+              data: cityInfo
             })
           } catch (error) {
             return errorResponse(error, req, res)

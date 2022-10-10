@@ -1,7 +1,7 @@
 const router = require("express").Router()
 const cityController = require('../controller/CityController')
 const { cityValidation } = require("../validator/cityValidation")
-
+const { Sequelize,Op } = require("sequelize");
 router.post('/add',cityValidation,(req,res)=>{
     return cityController.city.addCity(req,res)
 })

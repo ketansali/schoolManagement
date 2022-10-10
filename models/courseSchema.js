@@ -1,35 +1,38 @@
-const mongoose = require('mongoose')
-
-const courseSchema = new mongoose.Schema({
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/db");
+const courseSchema = sequelize.define('Course',{
+    Id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+        allowNull: false,
+      },
     courseName : {
-        type : String,
-        trim : true
+        type : DataTypes.STRING,
+        allowNull: false
     },
     startDate : {
-        type : Date,
-        trim : true
+        type : DataTypes.DATEONLY,
+        allowNull: false
     },
     endDate : {
-        type : Date,
-        trim : true
+        type : DataTypes.DATEONLY,
+        allowNull: false
     },
     description : {
-        type : String,
-        trim : true
+        type : DataTypes.STRING,
+        allowNull: false
     },
     createdBy : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'user'
+        type : DataTypes.INTEGER
     },
     updatedBy : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'user'
+        type :DataTypes.INTEGER
     },
     isActive : {
-        type : Boolean,
-        trim : true
+        type : DataTypes.BOOLEAN
     }
    
-},{timestamps:true})
-module.exports = mongoose.model('course',courseSchema)
+})
+module.exports = courseSchema
 

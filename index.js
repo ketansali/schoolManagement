@@ -1,6 +1,6 @@
 require('dotenv').config()
 require('./config/db')
-
+require('./config/table')
 const express = require('express')
 const cors = require('cors')
 const app = express()
@@ -11,6 +11,7 @@ const fileUpload = require('express-fileupload')
 const swaggerJson = require('./swagger/swagger.json')
 const swaggerUi = require('swagger-ui-express')
 const { corsOptionsDelegate } = require('./middleware/cors')
+const path = require('path')
 var options = {
   swaggerOptions: {
     authAction :{ JWT: {name: "JWT", schema: {type: "apiKey", in: "header", name: "Authorization", description: ""}, value: "Bearer <JWT>"} }
@@ -39,6 +40,8 @@ app.use(fileUpload({limits: {
 },
 abortOnLimit: true}))
 
+app.use('/users',express.static(path.join(__dirname,'uploads','users')))
+app.use('/eventes',express.static(path.join(__dirname,'uploads','eventes')))
 // api routes
 app.use('/api', routes)
 

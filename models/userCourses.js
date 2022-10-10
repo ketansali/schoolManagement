@@ -1,20 +1,20 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Sequelize } = require("sequelize");
 const sequelize = require("../config/db");
 
-const stateSchema = sequelize.define("State", {
+const userCoursesSchema = sequelize.define("UserCourses", {
   Id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
     allowNull: false,
   },
-  stateName: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  CountryId: {
+  UserId: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
+  },
+  CourseId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
   },
   createdBy: {
     type: DataTypes.INTEGER,
@@ -22,8 +22,6 @@ const stateSchema = sequelize.define("State", {
   updatedBy: {
     type: DataTypes.INTEGER,
   },
-  isActive: {
-    type: DataTypes.BOOLEAN,
-  },
+  
 });
-module.exports = stateSchema;
+module.exports = userCoursesSchema;

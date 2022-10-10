@@ -1,43 +1,41 @@
-const mongoose = require('mongoose')
+const { DataTypes, Sequelize } = require("sequelize");
+const sequelize = require("../config/db");
 
-const eventSchema = new mongoose.Schema({
-    eventName : {
-        type : String,
-        trim : true
-    },
-    startDate : {
-        type : Date,
-        trim : true
-    },
-    endDate : {
-        type : Date,
-        trim : true
-    },
-    description : {
-        type : String,
-        trim : true
-    },
-    time : {
-        type : String,
-        trim : true
-    },
-    images : [{
-        type : String,
-        trim : true
-    }],
-    createdBy : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'users'
-    },
-    updatedBy : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'users'
-    },
-    isActive : {
-        type : Boolean,
-        trim : true
-    }
-   
-},{timestamps:true})
-module.exports = mongoose.model('event',eventSchema)
-
+const eventSchema = sequelize.define("Event", {
+  Id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+    allowNull: false,
+  },
+  eventName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  startDate: {
+    type: DataTypes.DATEONLY,
+    allowNull: false,
+  },
+  endDate: {
+    type: DataTypes.DATEONLY,
+    allowNull: false,
+  },
+  description: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  time: {
+    type: DataTypes.TIME,
+    allowNull: false,
+  },
+  createdBy: {
+    type: DataTypes.INTEGER,
+  },
+  updatedBy: {
+    type: DataTypes.INTEGER,
+  },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+  },
+});
+module.exports = eventSchema;

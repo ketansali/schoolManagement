@@ -11,7 +11,7 @@ const  course  = require("./course")
 const  event  = require("./event")
 const { ensureAuthorized } = require("../middleware/auth")
 
-router.use('/account',account)
+router.use('/account',ensureAuthorized,account)
 router.use('/country',ensureAuthorized,countryRoutes)
 router.use('/state',ensureAuthorized,stateRoutes)
 router.use('/city',ensureAuthorized,cityRoutes)

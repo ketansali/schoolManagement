@@ -1,105 +1,91 @@
 "use strict";
-const mongoose = require("mongoose");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/db");
 const bcrypt = require("bcrypt");
 const SALT_WORK_FACTOR = 10;
 
-const userSchema = new mongoose.Schema({
-    firstName : {
-        type : String,
-        trim : true
-    },
-    lastName : {
-        type : String,
-        trim : true
-    },
-    email : {
-        type : String,
-        trim : true
-    },
-    contact : {
-        type : Number,
-        trim : true
-    },
-    country : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'country'
-    },
-    state : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'state'
-    },
-    city : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'city'
-    },
-    address : {
-        type : String,
-        trim : true
-    },
-    image : {
-        type : String,
-        trim : true
-    },
-    role : {
-        type : String,
-        trim : true
-    },
-    departmentId : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'department'
-    },
-    DOB : {
-        type : Date,
-        trim : true
-    },
-    DOJ : {
-        type : Date,
-        trim : true
-    },
-    degree : {
-        type : String,
-        trim : true
-    },
-    courseId : [{
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'course'
-    }],
-    createdBy : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'users'
-    },
-    userType : {
-        type : String,
-        trim : true
-    },
-    updatedBy : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'users'
-    },
-    isActive : {
-        type : Boolean,
-        trim : true
-    },
-    password : {
-        type : String,
-        trim : true
-    },
-},{timestamps:true})
-userSchema.index({ email: 1 });
+const userSchema = sequelize.define("User", {
+  Id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+    allowNull: false,
+  },
+  firstName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  lastName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  contact: {
+    type: DataTypes.BIGINT,
+    allowNull: false,
+  },
+  CountryId : {
+      type : DataTypes.INTEGER
+  },
+  StateId : {
+      type : DataTypes.INTEGER
+  },
+  CityId : {
+      type : DataTypes.INTEGER
+  },
+  address: {
+    type: DataTypes.STRING,
+  },
+  image: {
+    type: DataTypes.STRING,
+  },
+  role: {
+    type: DataTypes.STRING,
+  },
+  DepartmentId : {
+      type : DataTypes.INTEGER
+  },
+  DOB: {
+    type: DataTypes.DATEONLY,
+  },
+  DOJ: {
+    type: DataTypes.DATEONLY,
+  },
+  degree: {
+    type: DataTypes.STRING,
+  },
+  createdBy: {
+    type: DataTypes.INTEGER,
+  },
+  userType: {
+    type: DataTypes.STRING,
+  },
+  updatedBy: {
+    type: DataTypes.INTEGER,
+  },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+  },
+  password: {
+    type: DataTypes.STRING,
+  },
+});
+function generateHash(user) {
+  if (user === null) {
+      throw new Error('No found user');
+  }
+  else if (!user.changed('password')) return user.password;
+  else {
+      let salt = bcrypt.genSaltSync();
+      return user.password = bcrypt.hashSync(user.password, salt);
+  }
+}
 
-userSchema.pre('save',function(next){
-    const user = this
-    if(!user.isModified('password')) return next();
-    bcrypt.genSalt(SALT_WORK_FACTOR,(err,salt)=>{
-        if(err) return next(err)
-        bcrypt.hash(user.password,salt,(err,hash)=>{
-            if(err) return next(err)
-            user.password = hash
-            next()  
-        })
-    }) 
-})
+userSchema.beforeCreate(generateHash);
 
+userSchema.beforeUpdate(generateHash);
 
-module.exports = mongoose.model('users',userSchema)
-
+module.exports = userSchema;

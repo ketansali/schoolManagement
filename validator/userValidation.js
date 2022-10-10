@@ -13,9 +13,9 @@ exports.userValidation = (req, res, next) => {
     contact: Joi.string()
       .max(10).min(10)
       .required(),
-    country: Joi.string().required(),
-    state: Joi.string().required(),
-    city: Joi.string().required(),
+    CountryId: Joi.string().required(),
+    StateId: Joi.string().required(),
+    CityId: Joi.string().required(),
     address: Joi.string().required(),
     degree: Joi.string().required(),
     departmentId: Joi.string().required(),
